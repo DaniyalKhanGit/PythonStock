@@ -24,4 +24,10 @@ def calculate_moving_average(df, window=20):
     return df
 
 def max_drawdown(df):
-    pass
+    for row in df.itertuples():
+        if row.Index == 0:
+            df.at[row.Index, 'max_drawdown'] = 0.0
+        else:
+            df.at[row.Index, 'max_drawdown'] = (df.at[row.Index, 'high'] - df.at[row.Index, 'low']) / df.at[row.Index, 'high']
+    return df
+
