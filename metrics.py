@@ -20,7 +20,8 @@ def calculate_volatility(df, window=20):
     return df
 
 def calculate_moving_average(df, window=20):
-    pass
+    df['moving_average'] = df['close'].rolling(window=window).mean()
+    return df
 
 def max_drawdown(df):
     pass
