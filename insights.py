@@ -1,7 +1,7 @@
 
 import pandas as pd
 import numpy as np
-import metrics # Assuming metrics.py is in the same directory
+import metrics 
 
 # aim for something like {
 # "trend": "Bullish",
@@ -15,9 +15,8 @@ def generate_insights(df):
     df = metrics.calculate_daily_returns(df)
     df = metrics.calculate_volatility(df)
     df = metrics.calculate_moving_average(df)
-    df = metrics.max_drawdown(df)
 
-    max_dd = df['max_drawdown'].max()
+    max_dd = metrics.max_drawdown(df).max()
     avg_return = df['daily_return'].mean()
 
     def trend(df):
@@ -38,7 +37,7 @@ def generate_insights(df):
             vol_label = "High"
         return vol_label
     
-    max_dd = df["drawdown"].min()
+    max_dd = metrics.max_drawdown(df).min()
 
     def risk(df, max_dd):
         #vol risk
@@ -47,7 +46,7 @@ def generate_insights(df):
         else:
             vol_risk = 0
         #drawdown risk
-        max_dd = df["drawdown"].min()
+        max_dd = metrics.max_drawdown(df).min()
 
         if max_dd < -0.20:
             dd_risk = 1
@@ -74,8 +73,9 @@ def generate_insights(df):
 
     def flags(df):
         latest = df.iloc[-1]
-        max_drawdown = df["drawdown"].min()
+        max_drawdown = metrics.max_drawdown(df).min()
         flags = []
+
         if latest['daily_return'] < -0.05:
             flags.append("Larger than (5%) daily drop")
 
