@@ -112,6 +112,7 @@ def generate_insights(df):
         "average_return": round(avg_return, 4),
         "flags": flags
     }
+    
     return insights
 
 

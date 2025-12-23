@@ -1,21 +1,13 @@
 
 import argparse
 
-
 def parse_args():
-    """
-    Parse command-line arguments for the finance insights pipeline.
 
-    Returns
-    -------
-    argparse.Namespace
-        Parsed CLI arguments
-    """
     parser = argparse.ArgumentParser(
         description="Generate financial insights from a CSV file"
     )
 
-    # Positional argument: CSV file path
+    # Required positional argument: CSV file path
     parser.add_argument(
         "csv_path",
         help="Path to CSV file containing price data"

@@ -4,10 +4,6 @@ import numpy as np
 
 
 def calculate_metrics(df):
-    df = calculate_daily_returns(df)
-    df = calculate_volatility(df)
-    df = calculate_moving_average(df)
-    df = max_drawdown(df)
     def calculate_daily_returns(df):
         for row in df.itertuples():
             if row.Index == 0:
@@ -47,6 +43,11 @@ def calculate_metrics(df):
                 daily_return = (close - pclose) / pclose
                 df.at[row.Index, 'daily_return'] = daily_return
         return df
+    
+    df = calculate_daily_returns(df)
+    df = calculate_volatility(df)
+    df = calculate_moving_average(df)
+    df = max_drawdown(df)
     
     return df
 
