@@ -54,6 +54,7 @@ def generate_insights(df):
         else:
             dd_risk = 0
         #trend risk
+        latest = df.iloc[-1]
         if latest["close"] < latest["sma_50"]:
             trend_risk = 1
         else:
@@ -71,12 +72,30 @@ def generate_insights(df):
 
         
 
-    def flags(df, max_dd):
+    def flags(df):
+        latest = df.iloc[-1]
+        max_drawdown = df["drawdown"].min()
         flags = []
-        if vol > 0.3:
-            flags.append("High volatility")
-        if max_dd < -0.1:
-            flags.append("Recent drawdown")
+        if latest['daily_return'] < -0.05:
+            flags.append("Larger than (5%) daily drop")
+
+        if latest['volatility_20'] > 0.02:
+            flags.append("High constant volatility")
+
+        if max_drawdown < -0.20:
+            flags.append("Significant drawdown recently")
+
+        if (
+        latest["close"] < latest["sma_20"] and latest["sma_20"] < latest["sma_50"]
+        ):
+            flags.append("Bearish trend structure (price < SMA20 < SMA50)")
+        
+        recent_vol = df["volatility_20"].iloc[-5:].mean()
+        long_vol = df["volatility_20"].mean()
+
+        if recent_vol > 1.5 * long_vol:
+            flags.append("Increasing volatility trend")
+
         return flags
 
     trend = trend(df)
