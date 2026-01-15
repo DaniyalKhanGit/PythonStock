@@ -1,0 +1,11 @@
+
+The program in question is currently broken, planning to fix during FEB sometime.
+
+The basics of the program is that some csv file, in this case prices.csv is taken in through CLI,
+and then first processed in the parser file. 
+
+Afterwards, its taken into metrics, where it is turned into usable info in a pandas df.
+Finally taken into insights, and based on some basic financial calculations like volatility the
+program gives a rundown of what is going on with the stock. 
+
+2026-01-15
