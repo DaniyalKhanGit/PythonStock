@@ -16,11 +16,14 @@ def generate_insights(df):
     df = metrics.calculate_volatility(df)
     df = metrics.calculate_moving_average(df)
 
-    max_dd = metrics.max_drawdown(df).max()
+    df = metrics.max_drawdown(df)
     avg_return = df['daily_return'].mean()
 
+
+
+
     def trend(df):
-        if df['close'].iloc[-1] > df['moving_average'].iloc[-1]:
+        if df['close'].iloc[-1] > df['sma_20'].iloc[-1]:
             trendf = "Bullish"
         else:
             trendf = "Bearish"
@@ -28,7 +31,7 @@ def generate_insights(df):
         return trendf
 
     def vol(df):
-        vol = df['volatility'].iloc[-1]
+        vol = df['volatility_20'].iloc[-1]
         if vol < 0.01:
             vol_label = "Low"
         elif vol < 0.02:
@@ -37,17 +40,16 @@ def generate_insights(df):
             vol_label = "High"
         return vol_label
     
-    max_dd = metrics.max_drawdown(df).min()
-
+    df['max_drawdown'] = pd.to_numeric(df['max_drawdown'], errors='coerce')
+    max_dd = df['max_drawdown'].min().astype(float)
+    
     def risk(df, max_dd):
         #vol risk
-        if df['volatility'].iloc[-1] > 0.02:
+        if df['volatility_20'].iloc[-1] > 0.02:
             vol_risk = 1
         else:
             vol_risk = 0
         #drawdown risk
-        max_dd = metrics.max_drawdown(df).min()
-
         if max_dd < -0.20:
             dd_risk = 1
         else:
@@ -73,7 +75,6 @@ def generate_insights(df):
 
     def flags(df):
         latest = df.iloc[-1]
-        max_drawdown = metrics.max_drawdown(df).min()
         flags = []
 
         if latest['daily_return'] < -0.05:
@@ -82,7 +83,7 @@ def generate_insights(df):
         if latest['volatility_20'] > 0.02:
             flags.append("High constant volatility")
 
-        if max_drawdown < -0.20:
+        if max_dd < -0.20:
             flags.append("Significant drawdown recently")
 
         if (
@@ -98,28 +99,26 @@ def generate_insights(df):
 
         return flags
 
-    trend = trend(df)
-    vol = vol(df)
-    risk_level = risk(df)
-    flags = flags(df)
+    trend_variable = trend(df)
+    vol_variable = vol(df)
+    risk_level = risk(df, max_dd)
+    flags_variable = flags(df)
 
 
     insights = {
-        "trend": trend,
-        "volatility": vol,
+        "trend": trend_variable,
+        "volatility": vol_variable,
         "risk_level": risk_level,
         "max_drawdown": round(max_dd, 3),
         "average_return": round(avg_return, 4),
-        "flags": flags
+        "flags": flags_variable
     }
     
     return insights
 
 
 
-   
 
-# Insights
 
 
 
